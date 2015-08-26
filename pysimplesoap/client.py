@@ -176,7 +176,7 @@ class SoapClient(object):
         else:  # using WSDL:
             return lambda *args, **kwargs: self.wsdl_call(attr, *args, **kwargs)
 
-    def call(self, method, *args, **kwargs):
+    def call(self, method, *args, _ordering=[], **kwargs):
         """Prepare xml request and make SOAP call, returning a SimpleXMLElement.
 
         If a keyword argument called "headers" is passed with a value of a
@@ -199,6 +199,8 @@ class SoapClient(object):
         # serialize parameters
         if kwargs:
             parameters = list(kwargs.items())
+            if _ordering:
+                parameters = sorted(parameters, key=lambda i:_ordering.index(i[0]))
         else:
             parameters = args
         if parameters and isinstance(parameters[0], SimpleXMLElement):
